@@ -19,15 +19,22 @@ class World:
         self.leader_order : List[str] = []
     
 
-    def __str__(self) -> str:
-        string = f"{self.name}\n"
+    def ___(self) -> str:
+        cards    = ", ".join(self.cards.keys())
+        leaders  = ", ".join(self.leaders.keys())
+        dungeons = ", ".join(self.dungeons.keys())
+
+        card_order   = ", ".join(self.card_order)
+        leader_order = ", ".join(self.leader_order)
+
+        string  = f"{self.name}\n"
         string += "\n"
-        string += f"Cards:    {", ".join(card for card in self.cards.keys())}\n"
-        string += f"Leaders:  {", ".join(leader for leader in self.leaders.keys())}\n"
-        string += f"Dungeons: {", ".join(dungeon for dungeon in self.dungeons.keys())}\n"
+        string += f"Cards:    {cards}\n"
+        string += f"Leaders:  {leaders}\n"
+        string += f"Dungeons: {dungeons}\n"
         string += "\n"
-        string += f"Card order:   {", ".join(card for card in self.card_order)}\n"
-        string += f"Leader order: {", ".join(card for card in self.card_order)}"
+        string += f"Card order:   {card_order}\n"
+        string += f"Leader order: {leader_order}"
         return string
     
 
@@ -37,12 +44,12 @@ class World:
             "cards"        : [card.name for card in self.cards.values()],
             "leaders"      : [leader.name for leader in self.leaders.values()],
             "dungeons"     : [dungeon.name for dungeon in self.dungeons.values()],
-            "card_order"   : [card for card in self.card_order],
-            "leader_order" : [leader for leader in self.leader_order]
+            "card_order"   : self.card_order,
+            "leader_order" : self.leader_order
         }
 
-        with open(path, "w") as f:
-            json.dump(d, f, indent=4)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(d, f, indent=4, ensure_ascii=False)
         
         for card in self.cards.values():
             card.save(f"{card.name}.json")
@@ -54,51 +61,48 @@ class World:
             dungeon.save(f"{dungeon.name}.json")
     
 
-    def get_card(self, name: str) -> Card | None:
-        if name in self.cards:
-            return self.cards[name]
-        
-        return None
+    def get_card(self, name: str) -> "Card | None":
+        return self.cards.get(name)
     
 
-    def get_leader(self, name: str) -> Card | None:
-        if name in self.leaders:
-            return self.leaders[name]
-        
-        return None
+    def get_leader(self, name: str) -> "Card | None":
+        return self.leaders.get(name)
     
 
-    def get_dungeon(self, name: str) -> Dungeon | None:
-        if name in self.dungeons:
-            return self.dungeons[name]
-        
-        return None
+    def get_dungeon(self, name: str) -> "Dungeon | None":
+        return self.dungeons.get(name)
     
 
     def add_card(self, card: Card) -> bool:
-        if card.name not in self.card_order and not card.leader:
-            self.cards[card.name] = card
-            self.card_order.append(card.name)
-            return True
-        else:
+        if card.leader:
             return False
+        
+        if card.name in self.cards or card.name in self.card_order:
+            return False
+        
+        self.cards[card.name] = card
+        self.card_order.append(card.name)
+        return True
     
 
     def add_leader(self, leader: Card) -> bool:
-        if leader.name not in self.leader_order and leader.leader:
-            self.leaders[leader.name] = leader
-            self.leader_order.append(leader.name)
-            return True
-        else:
+        if not leader.leader:
             return False
+        
+        if leader.name in self.leaders or leader.name in self.leader_order:
+            return False
+        
+        self.leaders[leader.name] = leader
+        self.leader_order.append(leader.name)
+        return True
     
 
     def add_dungeon(self, dungeon: Dungeon) -> bool:
-        if dungeon.name not in self.dungeons:
-            self.dungeons[dungeon.name] = dungeon
-            return True
-        else:
+        if dungeon.name in self.dungeons:
             return False
+        
+        self.dungeons[dungeon.name] = dungeon
+        return True
     
 
     def export(self, path: str) -> None:
@@ -130,49 +134,53 @@ class World:
             f.write("\n".join(lines))
 
 
-def load_world(path: str) -> bool:
-    if not Path(path).is_file():
-        return False
+def load_world(path: str) -> "World | None":
+    file_path = Path(path)
+    if not file_path.is_file():
+        return None
      
     with open(path, "r", encoding="utf-8") as f:
         d = json.load(f)
         
     world = World(d["name"])
 
-    for card in d["cards"]:
-        card_ = load_card(f"{card}.json")
-        if not card_:
-            return False
+    for card_name in d["cards"]:
+        card_obj = load_card(f"{card_name}.json")
+        if not card_obj:
+            return None
             
-        if not world.add_card(card_):
-            return False
+        if not world.add_card(card_obj):
+            return None
         
-    for leader in d["leaders"]:
-        leader_ = load_card(f"{leader}.json")
-        if not leader_:
-            return False
-            
-        if not world.add_leader(leader_):
-            return False
-        
-    for dungeon in d["dungeons"]:
-        dungeon_ = load_dungeon(f"{dungeon}.json")
-        if not dungeon_:
-            return False
-            
-        if not world.add_dungeon(dungeon_):
-            return False
+    for leader_name in d["leaders"]:
+        leader_obj = load_card(f"{leader_name}.json")
+        if not leader_obj:
+            return None
 
-    for card in d["card_order"]:
-        if card not in world.card_order:
-            world.card_order.append(card)
-        else:
-            return False
+        if not leader_obj.leader:
+            leader_obj.leader = True
+            
+        if not world.add_leader(leader_obj):
+            return None
         
-    for leader in d["leader_order"]:
-        if leader not in world.leader_order:
-            world.leader_order.append(leader)
-        else:
-            return False
+    for dungeon_name in d["dungeons"]:
+        dungeon_obj = load_dungeon(f"{dungeon_name}.json")
+        if not dungeon_obj:
+            return None
+            
+        if not world.add_dungeon(dungeon_obj):
+            return None
 
-    return True
+    for card_name in d["card_order"]:
+        if card_name not in world.card_order and card_name in world.cards:
+            world.card_order.append(card_name)
+        else:
+            return None
+        
+    for leader_name in d["leader_order"]:
+        if leader_name not in world.leader_order and leader_name in world.leaders:
+            world.leader_order.append(leader_name)
+        else:
+            return None
+
+    return None

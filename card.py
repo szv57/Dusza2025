@@ -31,10 +31,10 @@ class Card:
     
 
     def __str__(self) -> str:
+        base = f"{self.name:<16}  {self.damage:>3}/{self.hp:<3}  {self.get_type_hu():<6}"
         if self.leader:
-            return f"{self.name:<16}  {self.damage:>3}/{self.hp:<3}  {self.get_type_hu():<6}  (vezér)"
-        else:
-            return f"{self.name:<16}  {self.damage:>3}/{self.hp:<3}  {self.get_type_hu():<6}"
+            return base + "  (vezér)"
+        return base
     
 
     def save(self, path: str) -> None:
@@ -46,8 +46,8 @@ class Card:
             "leader" : self.leader
         }
 
-        with open(path, "w") as f:
-            json.dump(d, f, indent=4)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(d, f, indent=4, ensure_ascii=False)
     
 
     def get_type_hu(self) -> str:
@@ -55,28 +55,34 @@ class Card:
     
 
     def make_leader(self, mod: str) -> bool:
-        if not self.leader:
-            self.leader = True
-
-            if mod == "sebzes"  : self.damage *= 2
-            if mod == "eletero" : self.hp     *= 2
-
-            return True
-        else:
+        if self.leader:
             return False
 
+        self.leader = True
 
-def load_card(path: str) -> Card | None:
-    if not Path(path).is_file():
+        if mod == "sebzes":
+            self.damage *= 2
+        if mod == "eletero":
+            self.hp *= 2
+
+        return True
+
+
+def load_card(path: str) -> "Card | None":
+    file_path = Path(path)
+    if not file_path.is_file():
         return None
         
-    with open(path, "r", encoding="utf-8") as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         d = json.load(f)
 
-    return Card(d["name"], d["damage"], d["hp"], d["type"], d["leader"])
+    try:
+        return Card(d["name"], d["damage"], d["hp"], d["type"], d["leader"])
+    except KeyError:
+        return None
 
 
-def clamp(x, minimum, maximum) -> int:
+def clamp(x: int, minimum: int, maximum: int) -> int:
     if x < minimum:
         return minimum
     if x > maximum:

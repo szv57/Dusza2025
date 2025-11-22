@@ -1,7 +1,7 @@
 import sys
 
 
-def main():
+def main() -> None:
     if len(sys.argv) == 1:
         print(f"Használat: python {sys.argv[0]} [--ui | <test_dir_path>]")
         sys.exit(1)

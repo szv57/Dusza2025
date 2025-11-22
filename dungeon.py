@@ -16,7 +16,6 @@ class Dungeon:
         self.reward : str = reward
         
         self.cards  : List[str] = []
-
         for card in cards:
             if card not in self.cards:
                 self.cards.append(card)
@@ -40,19 +39,23 @@ class Dungeon:
             "reward" : self.reward
         }
 
-        with open(path, "w") as f:
-            json.dump(d, f, indent=4)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(d, f, indent=4, ensure_ascii=False)
 
 
     def get_type_hu(self) -> str:
         return DUNGEON_TYPES_HU[DUNGEON_TYPES.index(self.type)]
 
 
-def load_dungeon(path: str) -> Dungeon | None:
-    if not Path(path).is_file():
+def load_dungeon(path: str) -> "Dungeon | None":
+    file_path = Path(path)
+    if not file_path.is_file():
         return None
         
     with open(path, "r", encoding="utf-8") as f:
         d = json.load(f)
         
-    return Dungeon(d["type"], d["name"], d["cards"], d["leader"], d["reward"])
+    try:
+        return Dungeon(d["type"], d["name"], d["cards"], d["leader"], d["reward"])
+    except KeyError:
+        return None
