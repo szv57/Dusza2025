@@ -1,7 +1,6 @@
-from __future__ import annotations
-
+from __future__  import annotations
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing      import Dict, List
 
 from card import CardTemplate
 from dungeon import Dungeon
@@ -9,16 +8,12 @@ from dungeon import Dungeon
 
 @dataclass
 class World:
-    """
-    A világhoz tartozó összes definíció: sima lapok, vezérek, kazamaták.
-    """
-    cards: Dict[str, CardTemplate] = field(default_factory=dict)
-    card_order: List[str] = field(default_factory=list)
-    leaders: Dict[str, CardTemplate] = field(default_factory=dict)
-    leader_order: List[str] = field(default_factory=list)
-    dungeons: Dict[str, Dungeon] = field(default_factory=dict)
+    cards        : Dict[str, CardTemplate] = field(default_factory=dict)
+    leaders      : Dict[str, CardTemplate] = field(default_factory=dict)
+    dungeons     : Dict[str, Dungeon] = field(default_factory=dict)
 
-    # --- világelemek létrehozása ---
+    card_order   : List[str] = field(default_factory=list)
+    leader_order : List[str] = field(default_factory=list)
 
     def add_card(self, name: str, damage: int, hp: int, typ: str) -> None:
         self.cards[name] = CardTemplate(name, damage, hp, typ)
@@ -42,8 +37,6 @@ class World:
 
     def add_dungeon(self, dungeon: Dungeon) -> None:
         self.dungeons[dungeon.name] = dungeon
-
-    # --- segédfüggvények ---
 
     def get_template(self, name: str) -> CardTemplate:
         if name in self.cards:
