@@ -23,7 +23,7 @@ class ImageButton:
         normal = pygame.image.load(image_normal_path).convert_alpha()
         hover = pygame.image.load(image_hover_path).convert_alpha()
 
-        # Ha van scale_to, akkor át kell méretezni
+        # Smooth scale kell, hogy ne legyen pixeles.
         if scale_to is not None:
             normal = pygame.transform.smoothscale(normal, scale_to)
             hover = pygame.transform.smoothscale(hover, scale_to)
@@ -117,9 +117,7 @@ class MainMenu:
 
         self.running = True
 
-    # ---------------------------------------------------------
-    #  Callback függvények
-    # ---------------------------------------------------------
+    # Callback függvények
 
     def start_new_game(self):
         print("Új játék indítása…")
@@ -146,9 +144,7 @@ class MainMenu:
     def exit_game(self):
         self.running = False
 
-    # ---------------------------------------------------------
-    #  Menü loop
-    # ---------------------------------------------------------
+    # Menü loop
 
     def run(self):
         clock = pygame.time.Clock()
