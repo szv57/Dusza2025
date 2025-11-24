@@ -1,23 +1,15 @@
 import pygame
 
+from menu import MainMenu
+
 
 def run_ui_mode():
     pygame.init()
+
     screen = pygame.display.set_mode((800, 600))
-    clock = pygame.time.Clock()
-    running = True
+    pygame.display.set_caption("Damareen")
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        screen.fill("purple")
-
-        # Ide jön majd a rendering.
-
-        pygame.display.flip()
-
-        clock.tick(60)
+    menu = MainMenu(screen)
+    menu.run()
 
     pygame.quit()

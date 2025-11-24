@@ -128,7 +128,7 @@ class GameState:
 # Példa világ + játékos játék módban
 
 
-def create_default_game_for_ui() -> GameState:
+def create_classic_game() -> GameState:
     """
     A klasszikus alap világ és játékos.
     """
