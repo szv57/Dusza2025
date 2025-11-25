@@ -60,17 +60,17 @@ def type_multiplier(attacker_element: str, defender_element: str) -> float:
     """
 
     strong_map = {
+        "fold": {"levego", "tuz"},
         "levego": {"fold", "viz"},
         "viz": {"levego", "tuz"},
         "tuz": {"viz", "fold"},
-        "fold": {"levego", "tuz"},
     }
 
     weak_map = {
+        "fold": {"viz"},
         "levego": {"tuz"},
         "viz": {"fold"},
         "tuz": {"levego"},
-        "fold": {"viz"},
     }
 
     if defender_element in strong_map.get(attacker_element, set()):
