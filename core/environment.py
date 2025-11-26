@@ -35,7 +35,7 @@ class GameEnvironment:
 
         return GameEnvironment(name, world, starting_collection)
 
-    def new_game(self, difficulty):
+    def new_game(self, difficulty) -> GameState:
         """
         Új játék indítása az adott környezet alapján.
 

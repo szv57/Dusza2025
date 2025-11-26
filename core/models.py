@@ -1,3 +1,8 @@
+from typing import Literal
+
+from core import ELEMENT_ORDER
+
+
 class CardDefinition:
     """
     Egy kártya típust ír le (név, sebzés, életerő, típus).
@@ -6,10 +11,22 @@ class CardDefinition:
     """
 
     def __init__(self, name, damage, health, element):
-        self.name = name
+        self.name = name.strip()
         self.damage = int(damage)
         self.health = int(health)
-        self.element = element  # "fold", "levego", "viz", "tuz"
+        self.element = element.strip().lower()  # "fold", "levego", "viz", "tuz"
+
+        if len(self.name) == 0 or len(self.name) > 16:
+            raise ValueError(f"Érvénytelen kártyanév (max 16 karakter): {self.name}")
+
+        if self.damage < 2 or self.damage > 100:
+            raise ValueError(f"Érvénytelen sebzés (2..100): {self.name}")
+
+        if self.health < 1 or self.health > 100:
+            raise ValueError(f"Érvénytelen életerő (1..100): {self.name}")
+
+        if self.element not in ELEMENT_ORDER:
+            raise ValueError(f"Érvénytelen típus: {self.element}")
 
     def copy(self):
         """Új, azonos értékű példányt ad vissza."""
@@ -36,34 +53,39 @@ class Dungeon:
     def __init__(
         self, name, kind, simple_card_names, leader_name=None, reward_type=None
     ):
-        self.name = name
-        self.kind = kind
+        self.name = name.strip()
+        self.kind = kind.strip().lower()
         self.simple_card_names = list(simple_card_names)
-        self.leader_name = leader_name
-        self.reward_type = reward_type
+        self.leader_name = (
+            leader_name.strip() if leader_name is not None else leader_name
+        )
+        self.reward_type = (
+            reward_type.strip().lower() if reward_type is not None else reward_type
+        )
 
-    def card_sequence(self, world):
+        if len(self.name) == 0 or len(self.name) > 20:
+            raise ValueError(f"Érvénytelen kazamatanév (max 20 karakter): {self.name}")
+
+    def card_sequence(self, world) -> list | Literal[False]:
         """
         Visszaadja a kazamata kártyáit CardDefinition listaként, a világ alapján.
         """
 
         cards = []
         for name in self.simple_card_names:
-            simple_card = world.get_simple_card(name)
-            if simple_card == -1:
-                print("Hiba a sima kártya lekérdezésénél.")
-                return -1
+            c = world.get_simple_card(name)
+            if c == -1:
+                return False
 
-            cards.append(simple_card)
-        
+            cards.append(c)
+
         if self.leader_name:
-            leader_card = world.get_leader_card(self.leader_name)
-            if leader_card == -1:
-                print("Hiba a vezérkártya lekérdezésénél.")
-                return -1
-            
-            cards.append(leader_card)
-        
+            v = world.get_leader_card(self.leader_name)
+            if v == -1:
+                return False
+
+            cards.append(v)
+
         return cards
 
 
@@ -82,14 +104,27 @@ class World:
 
     # Kártyák hozzáadása
 
-    def add_simple_card(self, name, damage, health, element):
+    def add_simple_card(
+        self, name, damage, health, element
+    ) -> Literal[True] | Literal[False]:
+        name = name.strip()
+        element = element.strip().lower()
+
         if name in self.simple_cards or name in self.leader_cards:
             print(f"Már létezik ilyen nevű kártya: {name}")
-            return -1
+            return False
 
-        self.simple_cards[name] = CardDefinition(name, damage, health, element)
+        try:
+            self.simple_cards[name] = CardDefinition(name, damage, health, element)
+        except ValueError as e:
+            print(str(e))
+            return False
 
-    def add_leader_card(self, name, base_card_name, mode):
+        return True
+
+    def add_leader_card(
+        self, name, base_card_name, mode
+    ) -> Literal[True] | Literal[False]:
         """
         Vezérkártya hozzáadása.
 
@@ -98,14 +133,16 @@ class World:
             - 'eletero': dupla életerő
         """
 
+        name = name.strip()
+        mode = mode.lower()
+
         if name in self.simple_cards or name in self.leader_cards:
             print(f"Már létezik ilyen nevű kártya: {name}")
-            return -1
+            return False
 
         base = self.get_simple_card(base_card_name)
-        if base == -1:
-            print("Hiba a sima kártya lekérdezésével.")
-            return -1
+        if not base:
+            return False
 
         if mode == "sebzes":
             damage = base.damage * 2
@@ -115,41 +152,50 @@ class World:
             health = base.health * 2
         else:
             print(f"Ismeretlen vezér mod: {mode}")
-            return -1
+            return False
 
-        self.leader_cards[name] = CardDefinition(name, damage, health, base.element)
+        try:
+            self.leader_cards[name] = CardDefinition(name, damage, health, base.element)
+        except ValueError as e:
+            print(str(e))
+            return False
+
+        return True
 
     # Kazamata kezelés
 
-    def add_dungeon(self, dungeon):
+    def add_dungeon(self, dungeon) -> Literal[True] | Literal[False]:
+        dungeon.name = dungeon.name.strip()
         if dungeon.name in self.dungeons:
             print(f"Már létezik ilyen nevű kazamata: {dungeon.name}")
-            return -1
+            return False
 
         self.dungeons[dungeon.name] = dungeon
 
+        return True
+
     # Lekérdezések
 
-    def get_simple_card(self, name):
+    def get_simple_card(self, name) -> CardDefinition | Literal[False]:
         try:
             return self.simple_cards[name]
         except KeyError:
             print(f"Ismeretlen sima kártya: {name}")
-            return -1
+            return False
 
-    def get_leader_card(self, name):
+    def get_leader_card(self, name) -> CardDefinition | Literal[False]:
         try:
             return self.leader_cards[name]
         except KeyError:
             print(f"Ismeretlen vezér kártya: {name}")
-            return -1
+            return False
 
-    def get_dungeon(self, name):
+    def get_dungeon(self, name) -> Dungeon | Literal[False]:
         try:
             return self.dungeons[name]
         except KeyError:
             print(f"Ismeretlen kazamata: {name}")
-            return -1
+            return False
 
     # Iterátorok (export / mentés megkönnyítésére)
 
@@ -177,7 +223,7 @@ class Player:
 
     # Gyűjtemény kezelése
 
-    def add_card_from_world(self, world, card_name):
+    def add_card_from_world(self, world, card_name) -> Literal[True] | Literal[False]:
         """
         Sima kártyát ad a gyűjteményhez a világból, ha még nincs benne.
 
@@ -188,17 +234,16 @@ class Player:
             return False
 
         base = world.get_simple_card(card_name)
-        if base == -1:
-            print("Hiba a sima kártya lekérdezésével.")
-            return -1
-        
+        if not base:
+            return False
+
         self.collection[card_name] = base.copy()
 
         return True
 
     # Pakli kezelése
 
-    def max_deck_size(self):
+    def max_deck_size(self) -> int:
         """
         A pakli maximális mérete: a gyűjtemény fele felfelé kerekítve.
         """
@@ -206,7 +251,7 @@ class Player:
         n = len(self.collection)
         return (n + 1) // 2
 
-    def set_deck(self, card_names):
+    def set_deck(self, card_names) -> Literal[True] | Literal[False]:
         """
         Pakli beállítása.
 
@@ -233,11 +278,13 @@ class Player:
 
         if not unique:
             print("A pakli üres vagy nem tartalmaz érvényes lapot.")
-            return -1
+            return False
 
         self.deck = unique
 
-    def has_deck(self):
+        return True
+
+    def has_deck(self) -> bool:
         return bool(self.deck)
 
 

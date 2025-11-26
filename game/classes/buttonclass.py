@@ -29,7 +29,7 @@ class Button:
         self.width = scale_w
         self.height = scale_h
 
-        self.rect = self.image_normal.get_rect(topleft=pos)
+        self.rect = self.image_normal.get_rect(topleft=(int(pos[0]), int(pos[1])))
         self.b_hover = False
 
         self.callback = callback_func

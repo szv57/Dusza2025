@@ -1,12 +1,7 @@
-uj kartya ; Kartya11F ; 1 ; 1 ; fold
-uj kartya ; Kartya11L ; 1 ; 1 ; levego
-uj kartya ; Kartya11V ; 1 ; 1 ; viz
-uj kartya ; Kartya11T ; 1 ; 1 ; tuz
-
-uj kartya ; Kartya22F ; 2 ; 2 ; fold
-uj kartya ; Kartya22L ; 2 ; 2 ; levego
-uj kartya ; Kartya22V ; 2 ; 2 ; viz
-uj kartya ; Kartya22T ; 2 ; 2 ; tuz
+uj kartya ; Kartya23F ; 2 ; 3 ; fold
+uj kartya ; Kartya23L ; 2 ; 3 ; levego
+uj kartya ; Kartya23V ; 2 ; 3 ; viz
+uj kartya ; Kartya23T ; 2 ; 3 ; tuz
 
 uj kartya ; Kartya25F ; 2 ; 5 ; fold
 uj kartya ; Kartya25L ; 2 ; 5 ; levego
@@ -18,48 +13,53 @@ uj kartya ; Kartya38L ; 3 ; 8 ; levego
 uj kartya ; Kartya38V ; 3 ; 8 ; viz
 uj kartya ; Kartya38T ; 3 ; 8 ; tuz
 
-
-uj vezer ; Vezer11FS ; Kartya11F ; sebzes
-uj vezer ; Vezer11FE ; Kartya11F ; eletero
-
-uj vezer ; Vezer22LS ; Kartya22L ; sebzes
-uj vezer ; Vezer22LE ; Kartya22L ; eletero
-
-uj vezer ; Vezer25VS ; Kartya25V ; sebzes
-uj vezer ; Vezer25VE ; Kartya25V ; eletero
-
-uj vezer ; Vezer38TS ; Kartya38T ; sebzes
-uj vezer ; Vezer38TE ; Kartya38T ; eletero
+uj kartya ; Kartya58F ; 5 ; 8 ; fold
+uj kartya ; Kartya58L ; 5 ; 8 ; levego
+uj kartya ; Kartya58V ; 5 ; 8 ; viz
+uj kartya ; Kartya58T ; 5 ; 8 ; tuz
 
 
-uj kazamata ; egyszeru ; Kazamata1EFS ; Kartya11F ; sebzes
-uj kazamata ; egyszeru ; Kazamata2ELE ; Kartya11L ; eletero
-uj kazamata ; egyszeru ; Kazamata3EVS ; Kartya11V ; sebzes
-uj kazamata ; egyszeru ; Kazamata4ETE ; Kartya11T ; eletero
+uj vezer ; Vezer23FS ; Kartya23F ; sebzes
+uj vezer ; Vezer23FE ; Kartya23F ; eletero
 
-uj kazamata ; kis ; Kazamata5KS ; Kartya22F, Kartya22V, Kartya22T ; Vezer22LS ; sebzes
-uj kazamata ; kis ; Kazamata6KE ; Kartya25F, Kartya25L, Kartya25T ; Vezer25VE ; eletero
+uj vezer ; Vezer25LS ; Kartya25L ; sebzes
+uj vezer ; Vezer25LE ; Kartya25L ; eletero
 
-uj kazamata ; nagy ; Kazamata7N ; Kartya22L, Kartya25V, Kartya38F, Kartya38L, Kartya38V ; Vezer38TS
+uj vezer ; Vezer38VS ; Kartya38V ; sebzes
+uj vezer ; Vezer38VE ; Kartya38V ; eletero
+
+uj vezer ; Vezer58TS ; Kartya58T ; sebzes
+uj vezer ; Vezer58TE ; Kartya58T ; eletero
+
+
+uj kazamata ; egyszeru ; Kazamata1EFS ; Kartya23F ; sebzes
+uj kazamata ; egyszeru ; Kazamata2ELE ; Kartya23L ; eletero
+uj kazamata ; egyszeru ; Kazamata3EVS ; Kartya23V ; sebzes
+uj kazamata ; egyszeru ; Kazamata4ETE ; Kartya23T ; eletero
+
+uj kazamata ; kis ; Kazamata5KS ; Kartya25F, Kartya25V, Kartya25T ; Vezer25LS ; sebzes
+uj kazamata ; kis ; Kazamata6KE ; Kartya38F, Kartya38L, Kartya38T ; Vezer38VE ; eletero
+
+uj kazamata ; nagy ; Kazamata7N ; Kartya25L, Kartya38V, Kartya58F, Kartya58L, Kartya58V ; Vezer58TS
 
 
 uj jatekos
 
 
-felvetel gyujtemenybe ; Kartya11F
-felvetel gyujtemenybe ; Kartya11L
+felvetel gyujtemenybe ; Kartya23F
+felvetel gyujtemenybe ; Kartya23L
 
-felvetel gyujtemenybe ; Kartya22V
-felvetel gyujtemenybe ; Kartya22T
+felvetel gyujtemenybe ; Kartya25V
+felvetel gyujtemenybe ; Kartya25T
 
-felvetel gyujtemenybe ; Kartya25F
-felvetel gyujtemenybe ; Kartya25L
+felvetel gyujtemenybe ; Kartya38F
+felvetel gyujtemenybe ; Kartya38L
 
-felvetel gyujtemenybe ; Kartya38V
-felvetel gyujtemenybe ; Kartya38T
+felvetel gyujtemenybe ; Kartya58V
+felvetel gyujtemenybe ; Kartya58T
 
 
-uj pakli ; Kartya11F, Kartya11L
+uj pakli ; Kartya23F, Kartya23L
 
 
 export vilag ; out.vilag0.txt

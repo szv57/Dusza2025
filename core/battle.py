@@ -1,9 +1,11 @@
 import random
 
+from typing import Literal
+
 from core import ELEMENT_ORDER
 
 
-def damage_multiplier(att_type, def_type):
+def damage_multiplier(att_type, def_type) -> float:
     """
     Típus-alapú szorzó: 2, 1 vagy 0.5.
 
@@ -21,7 +23,7 @@ def damage_multiplier(att_type, def_type):
     except ValueError:
         # ismeretlen típus esetén inkább ne módosítsuk
         print(f"Ismeretlen kártyatípus(ok): {att_type}, {def_type}")
-        return -1
+        return 1
 
     diff = (i_att - i_def) % len(ELEMENT_ORDER)
     if diff == 2:
@@ -46,7 +48,9 @@ class BattleResult:
         self.last_player_attacker_name = last_player_attacker_name
 
 
-def run_battle(world, player, dungeon, difficulty=0, rng=None):
+def run_battle(
+    world, player, dungeon, difficulty=0, rng=None
+) -> BattleResult | Literal[False]:
     """
     Levezényli a harcot. Visszaad egy BattleResult-ot.
 
@@ -60,9 +64,9 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
 
     if not player.has_deck():
         print("Hiba: Nincs összeállított pakli")
-        return -1
+        return False
 
-    if rng is None:
+    if not rng:
         rng = random.Random()
 
     difficulty = int(difficulty)
@@ -75,6 +79,8 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
     player_cards = [player.collection[name] for name in player.deck]
     # Kazamata kártyái a világból
     enemy_cards = dungeon.card_sequence(world)
+    if not enemy_cards:
+        return False
 
     # Állapot
     p_index = 0
@@ -93,7 +99,7 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
 
     while True:
         # Kazamata köre
-        if e_active is None:
+        if not e_active:
             if e_index >= len(enemy_cards):
                 # már nincs több kazamata lap -> játékos nyert
                 outcome = "win"
@@ -107,7 +113,7 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
             )
         else:
             # Támad, de csak akkor, ha a játékosnak van (már) aktív lapja
-            if p_active is None:
+            if not p_active:
                 # ha nincs aktív lap és nincs több a pakliban, akkor a játékos veszített
                 if p_index >= len(player_cards):
                     outcome = "lose"
@@ -115,10 +121,6 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
                 # egyébként (pl. a harc legelső körében) ilyenkor nem támad
             else:
                 dmg = apply_damage(e_active, p_active, difficulty, rng, is_enemy=True)
-                if dmg == -1:
-                    print("Hiba a tényleges sebzés kiszámításánál.")
-                    return -1
-                
                 p_hp = max(0, p_hp - dmg)
                 log_lines.append(
                     f"{round_no}.kor;kazamata;tamad;{e_active.name};{dmg};{p_active.name};{p_hp}"
@@ -130,7 +132,7 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
             break
 
         # Játékos köre
-        if p_active is None:
+        if not p_active:
             if p_index >= len(player_cards):
                 outcome = "lose"
                 break
@@ -142,7 +144,7 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
                 f"{round_no}.kor;jatekos;kijatszik;{p_active.name};{p_active.damage};{p_hp};{p_active.element}"
             )
         else:
-            if e_active is None:
+            if not e_active:
                 # ha nincs aktív kazamata lap
                 if e_index >= len(enemy_cards):
                     outcome = "win"
@@ -151,10 +153,6 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
                 # különben a következő kör elején játszik majd ki új lapot a kazamata
             else:
                 dmg = apply_damage(p_active, e_active, difficulty, rng, is_enemy=False)
-                if dmg == -1:
-                    print("Hiba a tényleges sebzés kiszámításánál.")
-                    return -1
-                
                 e_hp = max(0, e_hp - dmg)
                 log_lines.append(
                     f"{round_no}.kor;jatekos;tamad;{p_active.name};{dmg};{e_active.name};{e_hp}"
@@ -174,7 +172,7 @@ def run_battle(world, player, dungeon, difficulty=0, rng=None):
     return BattleResult(log_lines, outcome, last_player_attacker_name)
 
 
-def apply_damage(att_card, def_card, difficulty, rng, is_enemy):
+def apply_damage(att_card, def_card, difficulty, rng, is_enemy) -> float:
     """
     Kiszámítja a tényleges sebzést (típus + nehézségi szint figyelembevételével).
 
@@ -188,10 +186,6 @@ def apply_damage(att_card, def_card, difficulty, rng, is_enemy):
 
     # Típus-szorzó alkalmazása
     mult = damage_multiplier(att_card.element, def_card.element)
-    if mult == -1:
-        print("Hiba a sebzés kiszámításánál.")
-        return -1
-    
     base_damage = att_card.damage
     if mult == 2:
         base_damage *= 2

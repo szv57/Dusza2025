@@ -1,8 +1,8 @@
 import os
 import sys
 
-from run_test import run_test_mode
 from game.run_game import run_ui_mode
+from run_test import run_test_mode
 
 
 def main():
@@ -29,8 +29,7 @@ def main():
             print(f"Hiba: a megadott mappa nem létezik: {input_dir}")
             sys.exit(1)
 
-        if run_test_mode(input_dir) == -1:
-            print("A teszt nem lett teljesen sikeres.")
+        run_test_mode(input_dir)
 
 
 if __name__ == "__main__":

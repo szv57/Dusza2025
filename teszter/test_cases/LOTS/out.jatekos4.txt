@@ -1,0 +1,10 @@
+gyujtemeny;Kartya23F;2;3;fold
+gyujtemeny;Kartya23L;2;3;levego
+gyujtemeny;Kartya25V;2;5;viz
+gyujtemeny;Kartya25T;2;5;tuz
+gyujtemeny;Kartya38F;3;8;fold
+gyujtemeny;Kartya38L;3;8;levego
+gyujtemeny;Kartya58V;5;8;viz
+gyujtemeny;Kartya58T;5;8;tuz
+pakli;Kartya23F
+pakli;Kartya23L

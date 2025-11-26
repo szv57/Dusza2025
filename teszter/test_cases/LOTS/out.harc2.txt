@@ -1,0 +1,9 @@
+harc kezdodik;Kazamata2ELE
+1.kor;kazamata;kijatszik;Kartya23L;2;3;levego
+1.kor;jatekos;kijatszik;Kartya23F;2;3;fold
+2.kor;kazamata;tamad;Kartya23L;4;Kartya23F;0
+2.kor;jatekos;kijatszik;Kartya23L;2;3;levego
+3.kor;kazamata;tamad;Kartya23L;2;Kartya23L;1
+3.kor;jatekos;tamad;Kartya23L;2;Kartya23L;1
+4.kor;kazamata;tamad;Kartya23L;2;Kartya23L;0
+jatekos vesztett

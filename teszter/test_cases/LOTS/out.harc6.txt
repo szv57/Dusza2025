@@ -1,0 +1,7 @@
+harc kezdodik;Kazamata6KE
+1.kor;kazamata;kijatszik;Kartya38F;3;8;fold
+1.kor;jatekos;kijatszik;Kartya23F;2;3;fold
+2.kor;kazamata;tamad;Kartya38F;3;Kartya23F;0
+2.kor;jatekos;kijatszik;Kartya23L;2;3;levego
+3.kor;kazamata;tamad;Kartya38F;6;Kartya23L;0
+jatekos vesztett

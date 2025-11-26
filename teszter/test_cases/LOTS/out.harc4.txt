@@ -1,0 +1,11 @@
+harc kezdodik;Kazamata4ETE
+1.kor;kazamata;kijatszik;Kartya23T;2;3;tuz
+1.kor;jatekos;kijatszik;Kartya23F;2;3;fold
+2.kor;kazamata;tamad;Kartya23T;4;Kartya23F;0
+2.kor;jatekos;kijatszik;Kartya23L;2;3;levego
+3.kor;kazamata;tamad;Kartya23T;1;Kartya23L;2
+3.kor;jatekos;tamad;Kartya23L;1;Kartya23T;2
+4.kor;kazamata;tamad;Kartya23T;1;Kartya23L;1
+4.kor;jatekos;tamad;Kartya23L;1;Kartya23T;1
+5.kor;kazamata;tamad;Kartya23T;1;Kartya23L;0
+jatekos vesztett
