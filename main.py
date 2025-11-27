@@ -1,7 +1,7 @@
 import os
 import sys
 
-from game.run_game import run_ui_mode
+from run_game import run_ui_mode
 from run_test import run_test_mode
 
 
