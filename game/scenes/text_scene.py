@@ -34,8 +34,8 @@ class TextScene(Scene):
             y=y,
             width=w,
             height=h,
-            normal_path="Assets/Images/Buttons/NoHoverBack.png",
-            hover_path="Assets/Images/Buttons/HoverBack.png",
+            normal_path="Assets/2, Admin or Player/NoHoverBack.png",
+            hover_path="Assets/2, Admin or Player/HoverBack.png",
             callback=lambda: self.game.go_to("title"),
         )
 

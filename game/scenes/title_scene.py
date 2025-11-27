@@ -27,7 +27,9 @@ class TitleScene(Scene):
 
     def _load_assets(self):
         # Háttér
-        bg_raw = pygame.image.load("Assets/Images/Misc/MainMenuBG.png").convert()
+        bg_raw = pygame.image.load(
+            "Assets/1, MainMenu/MainMenuEmptySizedCorrect.png"
+        ).convert()
         self.background = pygame.transform.smoothscale(
             bg_raw, (self.screen_width, self.screen_height)
         )
@@ -35,7 +37,7 @@ class TitleScene(Scene):
     def _create_buttons(self):
         spacing = int(self.screen_height / 10.5)
         default_button_width = int(self.screen_width / 7)
-        default_button_height = int(self.screen_height / 13)
+        default_button_height = int(self.screen_height / 12)
         default_y = self.screen_height / 2 + self.screen_height / 11
         default_x = self.screen_width / 2 - default_button_width / 2
 
@@ -45,8 +47,8 @@ class TitleScene(Scene):
             y=int(default_y),
             width=default_button_width,
             height=default_button_height,
-            normal_path="Assets/Images/Buttons/NormalStart.png",
-            hover_path="Assets/Images/Buttons/HoverStart.png",
+            normal_path="Assets/1, MainMenu/NoHoverStart.png",
+            hover_path="Assets/1, MainMenu/HoverStart.png",
             callback=lambda: self.game.go_to("mode_select"),
         )
 
@@ -56,8 +58,8 @@ class TitleScene(Scene):
             y=int(default_y + spacing),
             width=default_button_width,
             height=default_button_height,
-            normal_path="Assets/Images/Buttons/NormalLoad.png",
-            hover_path="Assets/Images/Buttons/HoverLoad.png",
+            normal_path="Assets/1, MainMenu/NoHoverLoad.png",
+            hover_path="Assets/1, MainMenu/HoverLoad.png",
             callback=lambda: self.game.go_to("load"),
         )
 
@@ -67,8 +69,8 @@ class TitleScene(Scene):
             y=int(default_y + spacing * 2),
             width=default_button_width,
             height=default_button_height,
-            normal_path="Assets/Images/Buttons/NormalOption.png",
-            hover_path="Assets/Images/Buttons/HoverOption.png",
+            normal_path="Assets/1, MainMenu/NoHoverOptions.png",
+            hover_path="Assets/1, MainMenu/HoverOptions.png",
             callback=lambda: self.game.go_to("options"),
         )
 
@@ -78,8 +80,8 @@ class TitleScene(Scene):
             y=int(default_y + spacing * 3),
             width=default_button_width,
             height=default_button_height,
-            normal_path="Assets/Images/Buttons/NormalQuit.png",
-            hover_path="Assets/Images/Buttons/HoverQuit.png",
+            normal_path="Assets/1, MainMenu/NoHoverExit.png",
+            hover_path="Assets/1, MainMenu/HoverQuit.png",
             callback=self.game.quit,
         )
 

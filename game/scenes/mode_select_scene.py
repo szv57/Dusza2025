@@ -29,7 +29,9 @@ class ModeSelectScene(Scene):
 
     def _load_assets(self):
         # Háttérnek újrahasznosíthatjuk a főmenü hátterét is, vagy sima fekete
-        bg_raw = pygame.image.load("Assets/Images/Misc/MainMenuBG.png").convert()
+        bg_raw = pygame.image.load(
+            "Assets/1, MainMenu/MainMenuEmptySizedCorrect.png"
+        ).convert()
         self.background = pygame.transform.smoothscale(
             bg_raw, (self.screen_width, self.screen_height)
         )
@@ -41,7 +43,7 @@ class ModeSelectScene(Scene):
 
         # Popup ablak
         popup_raw = pygame.image.load(
-            "Assets/Images/Misc/PlayerOrAdminPopUp.png"
+            "Assets/2, Admin or Player/PlayerOrAdminPopUp.png"
         ).convert_alpha()
 
         popup_scale = 0.6
@@ -54,7 +56,7 @@ class ModeSelectScene(Scene):
         )
 
     def _create_buttons(self):
-        sample_btn = pygame.image.load("Assets/Images/Buttons/NormalStart.png")
+        sample_btn = pygame.image.load("Assets/1, MainMenu/NoHoverStart.png")
         orig_w, orig_h = sample_btn.get_size()
         aspect = orig_h / orig_w
 
@@ -70,8 +72,8 @@ class ModeSelectScene(Scene):
             y=player_y,
             width=btn_w,
             height=btn_h,
-            normal_path="Assets/Images/Buttons/NoHoverPlayer.png",
-            hover_path="Assets/Images/Buttons/HoverPlayer.png",
+            normal_path="Assets/2, Admin or Player/NoHoverPlayer.png",
+            hover_path="Assets/2, Admin or Player/HoverPlayer.png",
             callback=lambda: self.game.go_to("player"),
         )
 
@@ -80,8 +82,8 @@ class ModeSelectScene(Scene):
             y=gm_y,
             width=btn_w,
             height=btn_h,
-            normal_path="Assets/Images/Buttons/NoHoverGamemaster.png",
-            hover_path="Assets/Images/Buttons/HoverGamemaster.png",
+            normal_path="Assets/2, Admin or Player/NoHoverGamemaster.png",
+            hover_path="Assets/2, Admin or Player/HoverGamemaster.png",
             callback=lambda: self.game.go_to("gamemaster"),
         )
 
@@ -93,8 +95,8 @@ class ModeSelectScene(Scene):
             y=int(self.screen_height * 0.9 - back_btn_h),
             width=back_btn_w,
             height=back_btn_h,
-            normal_path="Assets/Images/Buttons/NoHoverBack.png",
-            hover_path="Assets/Images/Buttons/HoverBack.png",
+            normal_path="Assets/2, Admin or Player/NoHoverBack.png",
+            hover_path="Assets/2, Admin or Player/HoverBack.png",
             callback=lambda: self.game.go_to("title"),
         )
 
