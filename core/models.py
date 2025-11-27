@@ -10,7 +10,7 @@ class CardDefinition:
     Teszt módban ez közvetlenül megfelel az I. forduló világkártyáinak.
     """
 
-    def __init__(self, name, damage, health, element):
+    def __init__(self, name: str, damage: int, health: int, element: str):
         self.name = name.strip()
         self.damage = int(damage)
         self.health = int(health)
@@ -28,7 +28,7 @@ class CardDefinition:
         if self.element not in ELEMENT_ORDER:
             raise ValueError(f"Érvénytelen típus: {self.element}")
 
-    def copy(self):
+    def copy(self) -> "CardDefinition":
         """Új, azonos értékű példányt ad vissza."""
 
         return CardDefinition(self.name, self.damage, self.health, self.element)
@@ -51,7 +51,12 @@ class Dungeon:
     """
 
     def __init__(
-        self, name, kind, simple_card_names, leader_name=None, reward_type=None
+        self,
+        name: str,
+        kind: str,
+        simple_card_names: list,
+        leader_name: str | None = None,
+        reward_type: str | None = None,
     ):
         self.name = name.strip()
         self.kind = kind.strip().lower()
@@ -66,7 +71,7 @@ class Dungeon:
         if len(self.name) == 0 or len(self.name) > 20:
             raise ValueError(f"Érvénytelen kazamatanév (max 20 karakter): {self.name}")
 
-    def card_sequence(self, world) -> list | Literal[False]:
+    def card_sequence(self, world: "World") -> list | Literal[False]:
         """
         Visszaadja a kazamata kártyáit CardDefinition listaként, a világ alapján.
         """
@@ -105,7 +110,7 @@ class World:
     # Kártyák hozzáadása
 
     def add_simple_card(
-        self, name, damage, health, element
+        self, name: str, damage: int, health: int, element: str
     ) -> Literal[True] | Literal[False]:
         name = name.strip()
         element = element.strip().lower()
@@ -123,7 +128,7 @@ class World:
         return True
 
     def add_leader_card(
-        self, name, base_card_name, mode
+        self, name: str, base_card_name: str, mode: str
     ) -> Literal[True] | Literal[False]:
         """
         Vezérkártya hozzáadása.
@@ -164,7 +169,7 @@ class World:
 
     # Kazamata kezelés
 
-    def add_dungeon(self, dungeon) -> Literal[True] | Literal[False]:
+    def add_dungeon(self, dungeon: Dungeon) -> Literal[True] | Literal[False]:
         dungeon.name = dungeon.name.strip()
         if dungeon.name in self.dungeons:
             print(f"Már létezik ilyen nevű kazamata: {dungeon.name}")
@@ -176,21 +181,21 @@ class World:
 
     # Lekérdezések
 
-    def get_simple_card(self, name) -> CardDefinition | Literal[False]:
+    def get_simple_card(self, name: str) -> CardDefinition | Literal[False]:
         try:
             return self.simple_cards[name]
         except KeyError:
             print(f"Ismeretlen sima kártya: {name}")
             return False
 
-    def get_leader_card(self, name) -> CardDefinition | Literal[False]:
+    def get_leader_card(self, name: str) -> CardDefinition | Literal[False]:
         try:
             return self.leader_cards[name]
         except KeyError:
             print(f"Ismeretlen vezér kártya: {name}")
             return False
 
-    def get_dungeon(self, name) -> Dungeon | Literal[False]:
+    def get_dungeon(self, name: str) -> Dungeon | Literal[False]:
         try:
             return self.dungeons[name]
         except KeyError:
@@ -223,7 +228,9 @@ class Player:
 
     # Gyűjtemény kezelése
 
-    def add_card_from_world(self, world, card_name) -> Literal[True] | Literal[False]:
+    def add_card_from_world(
+        self, world: World, card_name: str
+    ) -> Literal[True] | Literal[False]:
         """
         Sima kártyát ad a gyűjteményhez a világból, ha még nincs benne.
 
@@ -251,7 +258,7 @@ class Player:
         n = len(self.collection)
         return (n + 1) // 2
 
-    def set_deck(self, card_names) -> Literal[True] | Literal[False]:
+    def set_deck(self, card_names: list) -> Literal[True] | Literal[False]:
         """
         Pakli beállítása.
 
@@ -288,7 +295,7 @@ class Player:
         return bool(self.deck)
 
 
-class GameState:
+class State:
     """
     Játékos állapot egy adott játékkörnyezetben, nehézségi szinttel.
 
@@ -298,7 +305,9 @@ class GameState:
       - environment_name (honnan indult a játék)
     """
 
-    def __init__(self, player, difficulty, environment_name=None):
+    def __init__(
+        self, player: Player, difficulty: int, environment_name: str | None = None
+    ):
         self.player = player
         self.difficulty = int(difficulty)
 

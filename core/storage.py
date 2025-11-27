@@ -1,13 +1,13 @@
 import json
 
-from core.environment import GameEnvironment
-from core.models import World, CardDefinition, Dungeon, Player, GameState
+from core.environment import Environment
+from core.models import World, CardDefinition, Dungeon, Player, State
 
 
 # Segédfüggvények: CardDefinition, Dungeon
 
 
-def _card_to_dict(card) -> dict:
+def _card_to_dict(card: CardDefinition) -> dict:
     return {
         "name": card.name.strip(),
         "damage": card.damage,
@@ -16,7 +16,7 @@ def _card_to_dict(card) -> dict:
     }
 
 
-def _card_from_dict(d) -> CardDefinition:
+def _card_from_dict(d: dict) -> CardDefinition:
     return CardDefinition(
         d["name"].strip(),
         d["damage"],
@@ -25,7 +25,7 @@ def _card_from_dict(d) -> CardDefinition:
     )
 
 
-def _dungeon_to_dict(dungeon) -> dict:
+def _dungeon_to_dict(dungeon: Dungeon) -> dict:
     leader_name = (
         dungeon.leader_name.strip() if dungeon.leader_name is not None else None
     )
@@ -41,7 +41,7 @@ def _dungeon_to_dict(dungeon) -> dict:
     }
 
 
-def _dungeon_from_dict(d) -> Dungeon:
+def _dungeon_from_dict(d: dict) -> Dungeon:
     leader_name = d.get("leader_name")
     if leader_name is not None:
         leader_name = leader_name.strip()
@@ -62,7 +62,7 @@ def _dungeon_from_dict(d) -> Dungeon:
 # World mentése / betöltése
 
 
-def world_to_dict(world) -> dict:
+def world_to_dict(world: World) -> dict:
     simple_cards = [_card_to_dict(c) for c in world.iter_simple_cards()]
     leader_cards = [_card_to_dict(c) for c in world.iter_leader_cards()]
     dungeons = [_dungeon_to_dict(d) for d in world.iter_dungeons()]
@@ -73,7 +73,7 @@ def world_to_dict(world) -> dict:
     }
 
 
-def world_from_dict(data) -> World:
+def world_from_dict(data: dict) -> World:
     world = World()
 
     for c in data.get("simple_cards", []):
@@ -94,7 +94,7 @@ def world_from_dict(data) -> World:
 # Player mentése / betöltése
 
 
-def player_to_dict(player) -> dict:
+def player_to_dict(player: Player) -> dict:
     collection = [_card_to_dict(c) for c in player.collection.values()]
     return {
         "collection": collection,
@@ -102,7 +102,7 @@ def player_to_dict(player) -> dict:
     }
 
 
-def player_from_dict(data) -> Player:
+def player_from_dict(data: dict) -> Player:
     player = Player()
     for c in data.get("collection", []):
         card = _card_from_dict(c)
@@ -115,10 +115,10 @@ def player_from_dict(data) -> Player:
     return player
 
 
-# GameEnvironment mentése / betöltése
+# Environment mentése / betöltése
 
 
-def environment_to_dict(env) -> dict:
+def environment_to_dict(env: Environment) -> dict:
     starting_collection = [_card_to_dict(c) for c in env.starting_collection.values()]
     return {
         "name": env.name,
@@ -127,7 +127,7 @@ def environment_to_dict(env) -> dict:
     }
 
 
-def environment_from_dict(data) -> GameEnvironment:
+def environment_from_dict(data: dict) -> Environment:
     name = data["name"]
     world = world_from_dict(data["world"])
     starting_collection = {}
@@ -135,10 +135,10 @@ def environment_from_dict(data) -> GameEnvironment:
         card = _card_from_dict(c)
         starting_collection[card.name] = card
 
-    return GameEnvironment(name, world, starting_collection)
+    return Environment(name, world, starting_collection)
 
 
-def save_environment_to_file(env, filepath):
+def save_environment_to_file(env: Environment, filepath: str):
     """
     Játékkörnyezet mentése JSON-ba.
     """
@@ -148,7 +148,7 @@ def save_environment_to_file(env, filepath):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def load_environment_from_file(filepath) -> GameEnvironment:
+def load_environment_from_file(filepath: str) -> Environment:
     """
     Játékkörnyezet betöltése JSON-ból.
     """
@@ -159,10 +159,10 @@ def load_environment_from_file(filepath) -> GameEnvironment:
     return environment_from_dict(data)
 
 
-# GameState mentése / betöltése
+# State mentése / betöltése
 
 
-def gamestate_to_dict(state) -> dict:
+def state_to_dict(state: State) -> dict:
     return {
         "environment_name": state.environment_name,
         "difficulty": state.difficulty,
@@ -170,25 +170,25 @@ def gamestate_to_dict(state) -> dict:
     }
 
 
-def gamestate_from_dict(data) -> GameState:
+def state_from_dict(data: dict) -> State:
     player = player_from_dict(data["player"])
     difficulty = data.get("difficulty", 0)
     env_name = data.get("environment_name")
 
-    return GameState(player, difficulty, env_name)
+    return State(player, difficulty, env_name)
 
 
-def save_gamestate_to_file(state, filepath):
+def save_state_to_file(state: State, filepath: str):
     """
-    Játékállapot (GameState) mentése JSON-ba.
+    Játékállapot (State) mentése JSON-ba.
     """
 
-    data = gamestate_to_dict(state)
+    data = state_to_dict(state)
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def load_gamestate_from_file(filepath) -> GameState:
+def load_state_from_file(filepath: str) -> State:
     """
     Játékállapot betöltése JSON-ból.
     """
@@ -196,4 +196,4 @@ def load_gamestate_from_file(filepath) -> GameState:
     with open(filepath, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    return gamestate_from_dict(data)
+    return state_from_dict(data)

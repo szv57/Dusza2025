@@ -1,7 +1,7 @@
-from core.models import Player, GameState, World
+from core.models import Player, State, World
 
 
-class GameEnvironment:
+class Environment:
     """
     Játékkörnyezet: világ + kezdő játékos gyűjtemény.
 
@@ -22,7 +22,7 @@ class GameEnvironment:
         self.starting_collection = starting_collection  # dict
 
     @staticmethod
-    def from_world_and_player(name: str, world: World, player: Player):
+    def from_world_and_player(name: str, world: World, player: Player) -> "Environment":
         """
         Segédfüggvény: már létező világ + játékos gyűjtemény alapján
         épít egy játékkörnyezetet.
@@ -33,16 +33,16 @@ class GameEnvironment:
         for card in player.collection.values():
             starting_collection[card.name] = card.copy()
 
-        return GameEnvironment(name, world, starting_collection)
+        return Environment(name, world, starting_collection)
 
-    def new_game(self, difficulty) -> GameState:
+    def new_game(self, difficulty: int) -> State:
         """
         Új játék indítása az adott környezet alapján.
 
         - létrejön egy új Player
         - a starting_collection másolatát kapja meg
         - még NINCS paklija, azt később kell beállítani
-        - visszaad egy GameState-et
+        - visszaad egy State-et
         """
 
         new_player = Player()
@@ -50,4 +50,4 @@ class GameEnvironment:
             new_player.collection[card.name] = card.copy()
 
         # pakli üresen hagyva
-        return GameState(new_player, difficulty, environment_name=self.name)
+        return State(new_player, difficulty, environment_name=self.name)
